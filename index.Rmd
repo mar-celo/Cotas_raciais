@@ -53,6 +53,7 @@ subdata <- subdata |>
 
 tbl <- reactable(
   data,
+  elementId = "cars-download-table",
   pagination = TRUE,
   searchable =  TRUE,
   defaultSorted = "Percentual.cota",
@@ -159,17 +160,27 @@ tbl <- reactable(
                 )
               ),
       compact = TRUE,
-      class = "followers-tbl" 
+      class = "followers-tbl"
+      
     )
   }
 )
 
-div(class = "twitter-followers",
-  div(class = "followers-header",
-    h2(class = "followers-title", "Inclusão Racial no Serviço Público Federal: Análise das Cotas Raciais nos Concursos"),
-    "Percentual de Ingresso de Servidores Públicos Federais por Meio de Cotas Raciais"
-  ),
-  tbl
+htmltools::browsable(
+  tagList(
+    tags$button(
+      tagList(fontawesome::fa("download"), "Download as CSV"),
+      onclick = "Reactable.downloadDataCSV('cars-download-table', 'cars.csv')"
+    ),
+    
+    div(class = "twitter-followers",
+        div(class = "followers-header",
+            h2(class = "followers-title", "Inclusão Racial no Serviço Público Federal: Análise das Cotas Raciais nos Concursos"),
+            "Percentual de Ingresso de Servidores Públicos Federais por Meio de Cotas Raciais"
+        ),
+        tbl
+    )
+  )
 )
 ```
 
