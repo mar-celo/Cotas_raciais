@@ -5,6 +5,8 @@ resource_files:
   - '.'
 ---
 
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
@@ -37,7 +39,7 @@ library(htmltools)
 
 # Salvar data em um pasta local
 
-# write_csv(data, "data/subdata.csv")
+# write_csv(data, "data/data.csv")
 
 # write_csv(subdata, "data/subdata.csv")
 
@@ -53,7 +55,7 @@ subdata <- subdata |>
 
 tbl <- reactable(
   data,
-  elementId = "cars-download-table",
+  
   pagination = TRUE,
   searchable =  TRUE,
   defaultSorted = "Percentual.cota",
@@ -114,7 +116,7 @@ tbl <- reactable(
               defaultSorted = "Percentual.cota",
               defaultColDef = colDef(headerClass = "header", align = "left"),
               columns = list(
-                NO_ORGAO = colDef(
+                NO_ORGAO = colDef( show = FALSE,
                   name = "Órgão",
                   width = 150
                 ),
@@ -163,14 +165,17 @@ tbl <- reactable(
       class = "followers-tbl"
       
     )
-  }
+  }, 
+  elementId = "cars-download-table"
+  
 )
 
 htmltools::browsable(
   tagList(
     tags$button(
-      tagList(fontawesome::fa("download"), "Download as CSV"),
-      onclick = "Reactable.downloadDataCSV('cars-download-table', 'cars.csv')"
+      tagList(fontawesome::fa("download"), "Baixar Dados"),
+      onclick = "Reactable.downloadDataCSV('cars-download-table', 'cotas.csv')"
+
     ),
     
     div(class = "twitter-followers",
@@ -191,9 +196,16 @@ htmltools::tags$link(href = "https://fonts.googleapis.com/css?family=Karla:400,7
 
 
 ```{css}
+
+.main-container {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .twitter-followers {
   margin: 0 auto;
-  width: 750px;
+  width: 850px;
   font-family: Karla, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
