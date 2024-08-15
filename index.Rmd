@@ -1,5 +1,5 @@
 ---
-title: "Ingresso no Serviço Público Federal por Meio de Cotas Raciais"
+title: "Ingresso no Serviço Público Federal por Meio de Cota Racial"
 output: html_document
 resource_files:
   - '.'
@@ -7,17 +7,58 @@ resource_files:
 
 
 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
 
-## Cota racial
+```{=html}
+
+<style type="text/css"> 
+h1.title {
+    font-size: 30px;
+}
+
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+}
+
+</style>
+```
 
 ```{r}
 library(readr)
 library(dplyr)
 library(reactable)
 library(htmltools)
+
+cotas <- read_csv("data/cotas.csv", locale = locale(encoding = "ISO-8859-1"))
+
+# adicionar mais uma coluna na condicao de cota receberá o valor 1 e 0 caso contrário
+
+cotas <- cotas %>% mutate(cota = ifelse(tipo_cota == "Cota Racial", 1, 0))
+
+# sumarizar os dados para saber a quantidade DISTINTOS de gr_mat por NO_ORGAO E NO_CARGO
+
+subdata <- cotas %>% 
+  group_by(NO_ORGAO, NO_CARGO_ORIGEM) %>% 
+  summarise(count_gr_mat = n_distinct(gr_mat), 
+            cotas = sum(cota),
+            Percentual.cotas = round(cotas/count_gr_mat,2),
+            qte_20 = count_gr_mat * 0.2,
+            diferenca = qte_20 - cotas)
+
+data <- cotas %>% 
+  group_by(NO_ORGAO) %>% 
+  summarise(count_gr_mat = n_distinct(gr_mat), 
+            cotas = sum(cota),
+            Percentual.cotas = round(cotas/count_gr_mat,2),
+            qte_20 = count_gr_mat * 0.2,
+            diferenca = qte_20 - cotas)
 
 # data <- clipr::read_clip_tbl()
 # 
@@ -47,25 +88,25 @@ data <- read_csv("data/data.csv")
 subdata <- read_csv("data/subdata.csv")
 
 data <- data  |> 
- select(NO_ORGAO, NO_CARGO, GR_MAT, COTA, Percentual.cota)  
+ select(NO_ORGAO, NO_CARGO_ORIGEM, count_gr_mat, cotas, Percentual.cotas)  
 
 subdata <- subdata |> 
-  select(NO_ORGAO, NO_CARGO, GR_MAT, COTA, Percentual.cota)
+  select(NO_ORGAO, NO_CARGO_ORIGEM, count_gr_mat, cotas, Percentual.cotas)
 
 tbl <- reactable(
   data,
   
   pagination = TRUE,
   searchable =  TRUE,
-  defaultSorted = "Percentual.cota",
+  defaultSorted = "Percentual.cotas",
   defaultColDef = colDef(headerClass = "header", align = "left"),
   columns = list(
     NO_ORGAO = colDef(
       name = "Órgão",
       width = 150
     ),
-    NO_CARGO = colDef(name="", maxWidth=130, align="left"),
-    GR_MAT = colDef(
+    NO_CARGO_ORIGEM = colDef(name="", maxWidth=130, align="left"),
+    count_gr_mat = colDef(
       name = "Total de Servidores",
       defaultSortOrder = "desc",
       cell = function(value) {
@@ -80,7 +121,7 @@ tbl <- reactable(
         div(class = "bar-cell", span(class = "number", value), bar)
       }
     ),
-    Percentual.cota = colDef(
+    Percentual.cotas = colDef(
       name = "% Cota Racial",
       defaultSortOrder = "desc",
       cell = JS('function(cellInfo) {
@@ -112,15 +153,15 @@ tbl <- reactable(
   details = function(index){
     new = subdata[subdata$NO_ORGAO == data$NO_ORGAO[index],]
     reactable(data=new,
-              defaultSorted = "Percentual.cota",
+              defaultSorted = "Percentual.cotas",
               defaultColDef = colDef(headerClass = "header", align = "left"),
               columns = list(
                 NO_ORGAO = colDef( show = FALSE,
                   name = "Órgão",
                   width = 150
                 ),
-                NO_CARGO = colDef(name="Cargo", maxWidth=130, align="left"),
-                GR_MAT = colDef(
+                NO_CARGO_ORIGEM = colDef(name="Cargo", maxWidth=130, align="left"),
+                count_gr_mat = colDef(
                   name = "Total de Servidores",
                   defaultSortOrder = "desc",
                   cell = function(value) {
@@ -135,7 +176,7 @@ tbl <- reactable(
                     div(class = "bar-cell", span(class = "number", value), bar)
                   }
                 ),
-                Percentual.cota = colDef(
+                Percentual.cotas = colDef(
                   name = "% Cota Racial",
                   defaultSortOrder = "desc",
                   cell = JS('function(cellInfo) {
@@ -171,19 +212,20 @@ tbl <- reactable(
 
 htmltools::browsable(
   tagList(
+    div(class = "twitter-followers",
+        div(class = "followers-header",
+            h1(class = "followers-title"), #"Inclusão Racial no Serviço Público Federal: Análise das Cotas Raciais nos Concursos"),
+            "Percentual de Ingresso de Servidores Públicos Federais por Meio de Cotas Raciais a partir de novembro de 2023 a junho de 2024"
+        )
+    ),
+    tbl,
     tags$button(
       tagList(fontawesome::fa("download"), "Baixar Dados"),
       onclick = "Reactable.downloadDataCSV('cars-download-table', 'cotas.csv')"
 
     ),
     
-    div(class = "twitter-followers",
-        div(class = "followers-header",
-            h2(class = "followers-title", "Inclusão Racial no Serviço Público Federal: Análise das Cotas Raciais nos Concursos"),
-            "Percentual de Ingresso de Servidores Públicos Federais por Meio de Cotas Raciais a partir de novembro de 2023"
-        ),
-        tbl
-    )
+    
   )
 )
 ```
