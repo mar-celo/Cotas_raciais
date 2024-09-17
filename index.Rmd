@@ -215,7 +215,7 @@ htmltools::browsable(
     div(class = "twitter-followers",
         div(class = "followers-header",
             h1(class = "followers-title"), #"Inclusão Racial no Serviço Público Federal: Análise das Cotas Raciais nos Concursos"),
-            "Percentual de Ingresso de Servidores Públicos Federais por Meio de Cotas Raciais a partir de novembro de 2023 a junho de 2024"
+            "Percentual de Ingresso de Servidores Públicos Federais por Meio de Cotas Raciais a partir de novembro de 2023 a julho de 2024"
         )
     ),
     tbl,
