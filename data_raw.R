@@ -1,7 +1,7 @@
 library(readr)
 library(dplyr)
 
-cotas <- read_csv("data/cotas.csv", locale = locale(encoding = "ISO-8859-1"))
+cotas <- read_csv("data/cotas_202505.csv", locale = locale(encoding = "ISO-8859-1"))
 
 # adicionar mais uma coluna na condicao de cota receberá o valor 1 e 0 caso contrário
 
