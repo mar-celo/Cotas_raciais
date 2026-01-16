@@ -36,7 +36,7 @@ library(dplyr)
 library(reactable)
 library(htmltools)
 
-cotas <- read_csv("data/cotas.csv", locale = locale(encoding = "ISO-8859-1"))
+cotas <- read_csv("data/cotas_202512.csv", locale = locale(encoding = "ISO-8859-1"))
 
 # adicionar mais uma coluna na condicao de cota receberá o valor 1 e 0 caso contrário
 
@@ -215,7 +215,7 @@ htmltools::browsable(
     div(class = "twitter-followers",
         div(class = "followers-header",
             h1(class = "followers-title"), #"Inclusão Racial no Serviço Público Federal: Análise das Cotas Raciais nos Concursos"),
-            "Percentual de Ingresso de Servidores Públicos Federais por Meio de Cotas Raciais a partir de novembro de 2023 a abril de 2025"
+            "Percentual de Ingresso de Servidores Públicos Federais por Meio de Cotas Raciais a partir de novembro de 2023 a dezembro de 2025"
         )
     ),
     tbl,
