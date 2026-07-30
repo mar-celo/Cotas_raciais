@@ -36,61 +36,11 @@ library(dplyr)
 library(reactable)
 library(htmltools)
 
-cotas <- read_csv("data/Gera_dados_infografico_cotas.csv", locale = locale(encoding = "ISO-8859-1"))
+# Dados já agregados pelo notebook Gera-dados-infografico-cotas
+data <- read_csv("data/data.csv") |> 
+  select(NO_ORGAO, NO_CARGO_ORIGEM, count_gr_mat, cotas, Percentual.cotas)
 
-# adicionar mais uma coluna na condicao de cota receberá o valor 1 e 0 caso contrário
-
-cotas <- cotas %>% mutate(cota = ifelse(tipo_cota == "Cota Racial", 1, 0))
-
-# sumarizar os dados para saber a quantidade DISTINTOS de gr_mat por NO_ORGAO E NO_CARGO
-
-subdata <- cotas %>% 
-  group_by(NO_ORGAO, NO_CARGO_ORIGEM) %>% 
-  summarise(count_gr_mat = n_distinct(gr_mat), 
-            cotas = sum(cota),
-            Percentual.cotas = round(cotas/count_gr_mat,2),
-            qte_20 = count_gr_mat * 0.2,
-            diferenca = qte_20 - cotas)
-
-data <- cotas %>% 
-  group_by(NO_ORGAO) %>% 
-  summarise(count_gr_mat = n_distinct(gr_mat), 
-            cotas = sum(cota),
-            Percentual.cotas = round(cotas/count_gr_mat,2),
-            qte_20 = count_gr_mat * 0.2,
-            diferenca = qte_20 - cotas)
-
-# data <- clipr::read_clip_tbl()
-# 
-# data <- data %>%
-#   mutate(
-#     Percentual.cota = readr::parse_number(Percentual.cota, locale = locale(decimal_mark = ","))
-#   )
-
-# Salvar data em um pasta local
-
-# write_csv(data, "data/data.csv")
-
-# subdata <- clipr::read_clip_tbl()
-# 
-# subdata <- subdata %>%
-#   mutate(
-#     Percentual.cota = readr::parse_number(Percentual.cota, locale = locale(decimal_mark = ","))
-#   )
-
-# Salvar data em um pasta local
-
-
-# write_csv(subdata, "data/subdata.csv")
-
-data <- read_csv("data/data.csv") 
-
-subdata <- read_csv("data/subdata.csv")
-
-data <- data  |> 
- select(NO_ORGAO, NO_CARGO_ORIGEM, count_gr_mat, cotas, Percentual.cotas)  
-
-subdata <- subdata |> 
+subdata <- read_csv("data/subdata.csv") |> 
   select(NO_ORGAO, NO_CARGO_ORIGEM, count_gr_mat, cotas, Percentual.cotas)
 
 tbl <- reactable(

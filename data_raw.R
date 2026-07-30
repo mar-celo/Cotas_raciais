@@ -1,7 +1,8 @@
 library(readr)
 library(dplyr)
 
-cotas <- read_csv("data/Gera_dados_infografico_cotas.csv", locale = locale(encoding = "ISO-8859-1"))
+# CSV gerado pelo notebook Gera-dados-infografico-cotas (UTF-8)
+cotas <- read_csv("data/Gera_dados_infografico_cotas.csv")
 
 # adicionar mais uma coluna na condicao de cota receberá o valor 1 e 0 caso contrário
 
